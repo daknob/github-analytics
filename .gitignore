@@ -93,3 +93,7 @@ ENV/
 
 # Vim stuff
 *.swp
+
+# Virtual Env
+bin
+include
