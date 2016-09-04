@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<title>GitHub Analytics</title>
+		<link rel="stylesheet" href="/static/css/theme.css">
+		<link rel="stylesheet" href="/static/css/navbar.css">
+		<script src="/static/js/chart.js" type="text/javascript"></script>
+	</head>
+	<body>
+		{% include "navbar.html" %}
+		
+		<div class="row">
+			<div class="col-xs-10 col-xs-offset-1">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">Chart</h3>
+					</div>
+					<div class="panel-body">
+						<canvas id="issueChart" class="col-xs-12"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-10 col-xs-offset-1">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">List of Issues</h3>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							{% for issue in issuelist %}
+							<a href="{{ issue['url'] }}" class="list-group-item">
+								<span class="badge">{{ issue['votes'] }}</span>
+								{{ issue['title'] }}
+							</a>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-10 col-xs-offset-1">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">GitHub Analytics Configuration</h3>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							<a href="#" class="list-group-item">
+								<h4 class="list-group-item-heading">GitHub Repository</h4>
+								<p class="list-group-item-text">{{ repo }}</p>
+							</a>
+							<a href="#" class="list-group-item">
+								<h4 class="list-group-item-heading">Issue Label</h4>
+								<p class="list-group-item-text">{{ label }}</p>
+							</a>
+							<a href="#" class="list-group-item">
+								<h4 class="list-group-item-heading">Issue State</h4>
+								<p class="list-group-item-text">{{ state }}</p>
+							</a>
+							<a href="#" class="list-group-item">
+								<h4 class="list-group-item-heading">Reaction</h4>
+								<p class="list-group-item-text">{{ reaction }}</p>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		{% include "footer.html" %}
+		
+		<script type="text/javascript">
+			var c = document.getElementById("issueChart");
+			var ic = new Chart(
+				c,
+				{
+					type: 'horizontalBar',
+					data: {
+						labels: [
+							{% for issue in issuelist %}
+							"{{ issue['shorttitle'] }}",
+							{% endfor %}
+						],
+						datasets: [
+							{
+								label: "Votes",
+								data: [
+									{% for issue in issuelist %}
+									{{ issue['votes'] }},
+									{% endfor %}
+								],
+								backgroundColor: [
+									{% for i in range(0, ill) %}
+									'rgba(69,130,236,1)',
+									{% endfor %}
+								],
+							}
+						]
+					},
+				}
+			);
+		</script>
+	</body>
+</html>
