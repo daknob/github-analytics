@@ -38,6 +38,16 @@ Development mode is activated. There's nothing out of the
 ordinary when running the software since it is pretty
 simple.
 
+### Docker
+You can run GitHub Analytics by using `docker` to avoid
+downloading and installing anything. A `Dockerfile` is
+included in the repository but the built image is also
+available on DockerHub. To run it, simply execute:
+
+```
+docker run -p 80:80 -e 'GH_ISSUE_TITLE_MAX_CHARS=20' [...] daknob/github-analytics
+```
+
 ## Environment Variables
 For the successful execution of GitHub Analytics, some
 Environment Variables are required. In no particular order,
