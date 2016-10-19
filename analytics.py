@@ -50,81 +50,96 @@ try:
     print("Access Token Loaded.")
 except:
     ACCESS_TOKEN = ""
-    print("GH_ACCESS_TOKEN not set. Defaulting to none. Up to 60 visits / hour allowed.")
+    print(
+        "GH_ACCESS_TOKEN not set. Defaulting to none. Up to 60 visits / " +
+        "hour allowed."
+    )
+
 
 # Router
 @app.route('/')
 def index():
-    
+
     # Get the list of all Issues
     IssueList = getIssueList()
-    
+
     # Sort by most votes
     IssueList = sorted(IssueList, key=lambda k: k['votes'], reverse=True)
-    
+
     # Show the page to the user
     return render_template(
         "votes.html",
-        page = "count",
-        repo = REPO,
-        label = LABEL,
-        state = STATE,
-        reaction = REACTION,
-        issuelist = IssueList,
-        ill = len(IssueList)
+        page="count",
+        repo=REPO,
+        label=LABEL,
+        state=STATE,
+        reaction=REACTION,
+        issuelist=IssueList,
+        ill=len(IssueList)
     )
+
 
 @app.route('/vid/')
 def votesById():
-    
+
     # Get the list of all Issues
     IssueList = getIssueList()
     # No need to sort: they're already sorted
-    
+
     # Show the page to the user
     return render_template(
         "votes.html",
-        page = "ids",
-        repo = REPO,
-        label = LABEL,
-        state = STATE,
-        reaction = REACTION,
-        issuelist = IssueList,
-        ill = len(IssueList)
+        page="ids",
+        repo=REPO,
+        label=LABEL,
+        state=STATE,
+        reaction=REACTION,
+        issuelist=IssueList,
+        ill=len(IssueList)
     )
+
 
 @app.route('/about/')
 def showAbout():
     # Show the About page
     return render_template(
         "about.html",
-        page = "about"
+        page="about"
     )
+
 
 def getIssueList():
     # Make an API call to GitHub
     f = r.get(
-        "https://api.github.com/repos/" + REPO + "/issues?labels=" + LABEL + "&state=" + STATE + "&per_page=100" + ACCESS_TOKEN,
-        headers = {"Accept": "application/vnd.github.squirrel-girl-preview"} # Beta API
+        "https://api.github.com/repos/" + REPO + "/issues?labels=" +
+        LABEL + "&state=" + STATE + "&per_page=100" + ACCESS_TOKEN,
+        # The following is needed to the use beta API
+        headers={"Accept": "application/vnd.github.squirrel-girl-preview"}
     ).json()
-    
+
     # Create a blank array to store the properly formatted results here
     IssueList = []
-    
-    # For every issue returned by GitHub, add it with the internal format to IssueList
+
+    # For every issue returned by GitHub,
+    # add it with the internal format to IssueList
     for issue in f:
         IssueList.append(
             {
-                "id": issue['number'], # Issue Number
-                "votes": issue['reactions'][REACTION], # The reaction we want
-                "title": issue['title'], # The Issue's Title
-                "shorttitle": issue['title'][0:MAX_STR], # The trimmed down Issue Title
-                "url": issue['html_url'] # The Issue URL
+                # Issue Number
+                "id": issue['number'],
+                # The reaction we want
+                "votes": issue['reactions'][REACTION],
+                # The Issue's Title
+                "title": issue['title'],
+                # The trimmed down Issue Title
+                "shorttitle": issue['title'][0:MAX_STR],
+                # The Issue URL
+                "url": issue['html_url']
             }
         )
-    
+
     return IssueList
 
 # Execution
 if __name__ == '__main__':
-	app.run(debug=True, threaded=True)
+    app.run(debug=True, threaded=True)
